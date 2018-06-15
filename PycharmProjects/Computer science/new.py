@@ -1,4 +1,18 @@
-import pygame, random, shelve
+import pygame, random
+
+print("The user is given a start screen, from here they choose to start, go to high score screen, or quit.")
+print("When the user chooses start they will be presented with the game board.")
+print("If the user looks in the top right they will see a ‘status’ bar this bar provides basic instructions to the user. ")
+print("If the user looks in the bottom left corner they will see a plus and a minus sign and two bars that say sideways and up. ")
+print("When creating their ships the user will select their direction (up or sideways) and their ship size (controlled using + and -) their ship can be either 1 blocks, 2 blocks or 3 blocks.")
+print("Once the user has placed 5 ships of their choosing they may begin to fire at the enemy ships, this consists of clicking squares on the right side of the screen.")
+print("If an enemy ship is hit the block will turn green, if your shot is a miss the shot will turn red. ")
+print("When the takes their shot the computer will automatically take theirs instantaneously, this means no wait times!")
+print("The user has 15 shots to get as high a score as possible in order to beat the computer. ")
+print("If the user does beat the computer they will move on to level 2 which is very similar to level 1 except that the user can now only place 3 ships.")
+print("If the user wins level 2 they will be given the option to proceed back to the home screen.")
+print("Once at the home screen menu they can select ‘highscore’  to view their top scores.")
+
 
 #  Colours
 light_green = (34, 177, 76)
