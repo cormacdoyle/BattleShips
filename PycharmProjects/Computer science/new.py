@@ -17,12 +17,7 @@ mybigfont = pygame.font.SysFont('arial bold', 50)
 intro_title_font = pygame.font.SysFont('arial bold', 140)
 big_title_font = pygame.font.SysFont('arial bold', 80)
 
-
-def save_game(user_score, computer_score):
-    d = shelve.open('score.txt')
-    d['user_score'] = user_score
-    d['computer_score'] = computer_score
-    d.close()
+highscore_list = []
 
 #  Intro Screen click logic
 def mouse_selction(x, y):
@@ -33,8 +28,6 @@ def mouse_selction(x, y):
         highscore()
     if (x > 525 and x < 675) and (y > 450 and y < 550):
         quit()
-
-
 
 #  Loads intro screen
 def intro_screen(state):
@@ -110,7 +103,6 @@ def tutorial(state):
 #  Loads all paramteres for level one
 
 def highscore():
-
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:  # when Exit button in the top right is pressed the window will close
@@ -124,10 +116,36 @@ def highscore():
         keys = pygame.key.get_pressed()
         highscorefont = mybigfont.render("Highscores:", True, black)
         highscore_display.blit(highscorefont, (300, 50))
-        highscore1 = myfont.render("1. ", True, white)
-        highscore_display.blit(highscore1, (50, 100))
-        highscore2 = myfont.render("2. " , True, white)
-        highscore_display.blit(highscore2, (50, 150))
+        copy_of_highscore_list = highscore_list[:]
+
+        if len(highscore_list) > 0:
+            if len(highscore_list) == 1:
+                highscore1 = myfont.render("1) " + str(max(highscore_list)), True, white)
+                highscore_display.blit(highscore1, (50, 100))
+            elif len(highscore_list) == 2:
+                bestscore1 = max(copy_of_highscore_list)
+                copy_of_highscore_list.remove(bestscore1)
+                bestscore2 = max(copy_of_highscore_list)
+                highscore1 = mybigfont.render("1) " + str(bestscore1), True, white)
+                highscore_display.blit(highscore1, (50, 100))
+                highscore2 = mybigfont.render("2) " + str(bestscore2) , True, white)
+                highscore_display.blit(highscore2, (50, 150))
+            elif len(highscore_list) >= 3:
+                bestscore1 = max(copy_of_highscore_list)
+                copy_of_highscore_list.remove(bestscore1)
+                bestscore2 = max(copy_of_highscore_list)
+                copy_of_highscore_list.remove(bestscore2)
+                bestscore3 = max(copy_of_highscore_list)
+                highscore1 = mybigfont.render("1) " + str(bestscore1), True, white)
+                highscore_display.blit(highscore1, (50, 100))
+                highscore2 = mybigfont.render("2) " + str(bestscore2) , True, white)
+                highscore_display.blit(highscore2, (50, 150))
+                highscore3 = mybigfont.render("3) " + str(bestscore3), True, white)
+                highscore_display.blit(highscore3, (50, 200))
+        else:
+            highscore3 = myfont.render("Oops no scores stored yet.", True, white)
+            highscore_display.blit(highscore3, (50,100))
+
         pressspacetointro = myfont.render("Press Space to return to Home Page", True, black)
         highscore_display.blit(pressspacetointro, (50, 500))
         if keys[pygame.K_SPACE]:
@@ -149,12 +167,15 @@ def youlost():
         keys = pygame.key.get_pressed()
         losefont = mybigfont.render("You Lost", True, black)
         youlost_display.blit(losefont, (100, 300))
-        pressspacetoquit = myfont.render("Press SPACE to quit", True, white)
-        youlost_display.blit(pressspacetoquit, (100, 400))
-        if keys[pygame.K_SPACE]:
+        pressqtoquit = myfont.render("Press Q to quit", True, white)
+        youlost_display.blit(pressqtoquit, (100, 400))
+        pressspacetointro = myfont.render("Press SPACE to return to home page", True, white)
+        youlost_display.blit(pressspacetointro, (100, 450))
+        if keys[pygame.K_q]:
             quit()
             break
-
+        if keys[pygame.K_SPACE]:
+            intro_screen(True)
         pygame.display.update()
 
 def tie_game():
@@ -482,19 +503,19 @@ def level_two(state):
 
                 #  Locks ths game when user runs out of shots
                 if shots_left == 0:
+                    user_score_constant = user_score
+                    highscore_list.append(user_score_constant)
                     game_lock = False
-
                     if user_score == ai_score:
                         tie_game_2()
-                        save_game(user_score,ai_score)
+                        break
                     elif user_score > ai_score:
                         win_level_two()
-                        save_game(user_score,ai_score)
+                        break
                     elif user_score < ai_score:
                         display.fill(red)
                         pygame.display.update()
                         youlost()
-                        save_game(user_score,ai_score)
                         break
 
         #  If user clicks quit game will end
@@ -576,6 +597,8 @@ def level_two(state):
             #  Draw block on grid as mouse moves
             if (l > 100 and l < 600) and (k > 100 and k < 600):
                 pygame.draw.rect(display, black, (l - 25, k - 25, ship_x, ship_y))
+
+
         pygame.display.update()
         clock.tick(100)
 
@@ -798,16 +821,17 @@ def level_one(state):
 
                 #  Locks ths game when user runs out of shots
                 if shots_left == 0:
+                    user_score_constant = user_score
+                    highscore_list.append(user_score_constant)
                     game_lock = False
-
                     if user_score == ai_score:
                         tie_game()
+                        break
                     elif user_score > ai_score:
                         win_level_one()
+                        break
                     elif user_score < ai_score:
-                        display.fill(red)
-                        pygame.display.update()
-                        ()
+                        youlost()
                         break
 
         #  If user clicks quit game will end
@@ -889,8 +913,6 @@ def level_one(state):
             #  Draw block on grid as mouse moves
             if (l > 100 and l < 600) and (k > 100 and k < 600):
                 pygame.draw.rect(display, black, (l - 25, k - 25, ship_x, ship_y))
-
-
         pygame.display.update()
 
         clock.tick(100)
